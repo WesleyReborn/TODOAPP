@@ -1,11 +1,11 @@
 package com.example.firebaseauthlogin
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.todoapp.exceptions.FireBaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class AuthViewModel : ViewModel() {
 
@@ -13,9 +13,9 @@ class AuthViewModel : ViewModel() {
 
     val currentUser : FirebaseUser? get() = auth.currentUser
 
-    private val _authState = MutableLiveData<State>()
+    private val _authState = MutableStateFlow<State>(State.NotAuthenticated)
 
-    val authState : LiveData<State> = _authState
+    val authState: StateFlow<State> = _authState
 
     init {
         authStatus()
@@ -73,7 +73,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun resetState(){
-        _authState.value = null
+        _authState.value = State.NotAuthenticated
     }
 }
 

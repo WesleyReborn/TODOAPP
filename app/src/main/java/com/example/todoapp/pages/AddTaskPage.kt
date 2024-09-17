@@ -55,7 +55,8 @@ fun AddTaskPage(
 
         Button(onClick = {
             val id = UUID.randomUUID().toString()
-            taskViewModel.insertTask(user, Task(id = id, title = title, description = description, completed = false))
+           val newTask = Task(id = id, title = title, description = description)
+            taskViewModel.insertTask(user, newTask)
             navController.popBackStack()
         }) {
             Text(text = "Salvar")

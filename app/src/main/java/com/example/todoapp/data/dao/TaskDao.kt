@@ -2,6 +2,7 @@ package com.example.todoapp.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.todoapp.data.model.Task
@@ -9,7 +10,7 @@ import com.example.todoapp.data.model.Task
 @Dao
 interface TaskDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(task : Task)
 
     @Update
@@ -29,4 +30,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks WHERE id = :id")
     suspend fun getTaskById(id: String): Task
+
+    @Query("SELECT * FROM tasks WHERE isSynch = 0")
+    suspend fun getUnsynchTasks(): List<Task>
 }

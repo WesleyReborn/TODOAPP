@@ -95,5 +95,7 @@ dependencies {
     //NavController
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
-
+    //Paging
+    implementation("androidx.paging:paging-runtime-ktx:3.1.1")
+    implementation ("androidx.paging:paging-common-ktx:3.1.1")
 }

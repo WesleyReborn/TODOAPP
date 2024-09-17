@@ -1,5 +1,6 @@
 package com.example.todoapp.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,14 +29,16 @@ import com.example.todoapp.ui.TaskViewModel
 fun EditTaskPage(
     navController: NavController,
     taskViewModel: TaskViewModel,
-    user : String,
+    user: String,
     taskId: String
 ) {
+    Log.d("EditTaskPage", "Página de edição aberta para o Task ID: $taskId")
     val task = taskViewModel.getTaskById(taskId)
     var title by remember { mutableStateOf(task?.title ?: "") }
     var description by remember { mutableStateOf(task?.description ?: "") }
 
     if (task == null) {
+        Log.e("EditTaskPage", "Tarefa não encontrada para o ID: $taskId")
         Text(text = "Tarefa não encontrada", fontSize = 32.sp)
         return
     }
@@ -58,10 +61,15 @@ fun EditTaskPage(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            taskViewModel.updateTask(user, Task(id = taskId, title = title, description = description, completed = task.completed))
+            Log.d("EditTaskPage", "Botão salvar clicado para tarefa: $title")
+            if (task != null) {
+                Log.d("EditTaskPage", "Atualizando tarefa: $title")
+                taskViewModel.updateTask(user, Task(id = taskId, title = title, description = description))
+            }
             navController.popBackStack()
         }) {
             Text(text = "Salvar")
         }
     }
 }
+

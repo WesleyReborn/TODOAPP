@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -39,14 +40,14 @@ fun LoginPage(modifier : Modifier = Modifier, navController: NavController, auth
         mutableStateOf("")
     }
 
-    val authState = authViewModel.authState.observeAsState()
+    val authState by authViewModel.authState.collectAsState()
 
     val context = LocalContext.current
 
-    LaunchedEffect(authState.value) {
-        when(authState.value) {
+    LaunchedEffect(authState) {
+        when (authState) {
             is State.Authenticated -> navController.navigate("home/${authViewModel.currentUser?.uid}")
-            is State.Error -> Toast.makeText(context, (authState.value as State.Error).message, Toast.LENGTH_SHORT).show()
+            is State.Error -> Toast.makeText(context, (authState as State.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
         }
     }
@@ -77,7 +78,7 @@ fun LoginPage(modifier : Modifier = Modifier, navController: NavController, auth
         Button(onClick = {
             authViewModel.login(email, password)
         },
-            enabled = authState.value != State.Loading
+            enabled = authState != State.Loading
         ) {
             Text(text = "Login")
         }
