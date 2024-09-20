@@ -17,47 +17,46 @@ class TaskRepository(
     companion object {
         private const val TAG = "TaskRepository"
     }
-
-    suspend fun insert(task: Task) {
+    // Função para inserir uma nova tarefa
+    suspend fun insert(user : String, task: Task) {
         Log.d(TAG, "Inserindo tarefa no banco de dados local: ${task.title}")
         withContext(Dispatchers.IO) {
             taskDao.insert(task)
+            firestoreRepository.addTask(user, task)
         }
     }
-
-    suspend fun update(task: Task) {
+    // Função para atualizar uma tarefa existente
+    suspend fun update(user : String, task: Task) {
         Log.d(TAG, "Atualizando tarefa: ${task.title}")
         withContext(Dispatchers.IO) {
             taskDao.update(task)
+            firestoreRepository.updateTask(user, task)
         }
     }
-
+    // Função para recuperar todas as tarefas
     suspend fun getAllTasks(): List<Task> {
         Log.d(TAG, "Recuperando todas as tarefas do banco de dados local")
         return withContext(Dispatchers.IO) {
             taskDao.getAllTasks()
         }
     }
-
-    suspend fun deleteTask(taskId : String) {
+    // Função para deletar uma tarefa
+    suspend fun deleteTask(user : String, taskId : String) {
         return withContext(Dispatchers.IO) {
             taskDao.deleteTask(taskId)
+            firestoreRepository.deleteTask(user, taskId)
         }
     }
-
-    suspend fun getTaskById(id: String): Task? {
+    // Função para buscar uma tarefa pelo ID
+    suspend fun getTaskById(id: String): Task {
         Log.d(TAG, "Buscando tarefa por ID: $id")
         return withContext(Dispatchers.IO) {
             val task = taskDao.getTaskById(id)
-            if (task != null) {
-                Log.d(TAG, "Tarefa encontrada: ${task.title}")
-            } else {
-                Log.d(TAG, "Tarefa não encontrada para o ID: $id")
-            }
+            Log.d(TAG, "Tarefa encontrada: ${task.title}")
             task
         }
     }
-
+    // Função para sincronizar tarefas com o Firestore
     suspend fun syncTasks(user: String) {
         withContext(Dispatchers.IO) {
             Log.d(TAG, "Iniciando sincronização de tarefas para o usuário: $user")
@@ -70,11 +69,13 @@ class TaskRepository(
                         firestoreRepository.addTask(user, task)
                         taskDao.insert(task.copy(isSynch = true))
                     }
-
                     val tasksFirestore = firestoreRepository.getAllTasks(user)
                     Log.d(TAG, "Tarefas recuperadas do Firestore: ${tasksFirestore.size}")
                     for (task in tasksFirestore) {
-                        Log.d(TAG, "Inserindo tarefa do Firestore no banco local: ${task.title}")
+                        Log.d(
+                            TAG,
+                            "Inserindo tarefa do Firestore no banco local: ${task.title}"
+                        )
                         taskDao.insert(task)
                     }
                 } else {
@@ -86,5 +87,10 @@ class TaskRepository(
             }
         }
     }
+    // Função para deletar uma tarefa localmente
+    suspend fun deleteTaskLocally(taskId: String) {
+        withContext(Dispatchers.IO) {
+            taskDao.deleteTask(taskId)
+        }
+    }
 }
-

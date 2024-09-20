@@ -1,25 +1,19 @@
 package com.example.todoapp.data
 
+import android.util.Log
 import com.example.todoapp.data.model.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import java.util.UUID
-
-import android.util.Log
 
 class FirestoreRepository {
-
     companion object {
         private const val TAG = "FirestoreRepository"
     }
-
     private val firestore = FirebaseFirestore.getInstance()
-
     private fun userTaskList(user: String) = firestore
         .collection("users")
         .document(user)
         .collection("tasks")
-
     suspend fun getAllTasks(user: String): List<Task> {
         return try {
             Log.d(TAG, "Buscando todas as tarefas do Firestore para o usuário: $user")
@@ -36,7 +30,6 @@ class FirestoreRepository {
             emptyList()
         }
     }
-
     suspend fun addTask(user: String, task: Task) {
         try {
             Log.d(TAG, "Adicionando tarefa ao Firestore: ${task.title}")
@@ -49,7 +42,6 @@ class FirestoreRepository {
             Log.e(TAG, "Erro ao adicionar tarefa no Firestore: ${e.message}")
         }
     }
-
     suspend fun updateTask(user: String, task: Task) {
         try {
             Log.d(TAG, "Atualizando tarefa no Firestore: ${task.title}")
@@ -62,7 +54,6 @@ class FirestoreRepository {
             Log.e(TAG, "Erro ao atualizar tarefa no Firestore: ${e.message}")
         }
     }
-
     suspend fun deleteTask(user: String, taskId: String) {
         try {
             Log.d(TAG, "Deletando tarefa no Firestore com ID: $taskId")

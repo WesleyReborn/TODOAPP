@@ -10,14 +10,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
-
+    // Estado que mantém a lista de tarefas
     private val _taskList = MutableStateFlow<List<Task>>(emptyList())
     val taskList : StateFlow<List<Task>> = _taskList
+    // Estado que mantém a mensagem de erro
     private val _errorMessage = MutableStateFlow<String?>(null)
+    // Inicializa o ViewModel carregando as tarefas
     init {
         loadTasks()
     }
-
+    // Função para carregar as tarefas do repositório
     private fun loadTasks() {
         viewModelScope.launch {
             try {
@@ -28,11 +30,11 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
             }
         }
     }
-
+    // Função para inserir uma nova tarefa
     fun insertTask(user : String, task: Task) {
         viewModelScope.launch {
             try {
-                taskRepository.insert(task)
+                taskRepository.insert(user, task)
                 taskRepository.syncTasks(user)
                 loadTasks()
             } catch (e : Exception) {
@@ -40,11 +42,11 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
             }
         }
     }
-
+    // Função para atualizar uma tarefa existente
     fun updateTask(user : String, task: Task) {
         viewModelScope.launch {
             try {
-                taskRepository.update(task)
+                taskRepository.update(user, task)
                 taskRepository.syncTasks(user)
                 loadTasks()
             } catch (e : Exception) {
@@ -52,22 +54,24 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
             }
         }
     }
-
+    // Função para deletar uma tarefa
     fun deleteTask(user : String, taskId: String) {
         viewModelScope.launch {
-           try {
-               taskRepository.deleteTask(taskId)
-               taskRepository.syncTasks(user)
-               loadTasks()
-           } catch (e : Exception) {
-               _errorMessage.value = "Erro ao excluir a tarefa: ${e.message}"
-           }
+            try {
+                _taskList.value = _taskList.value.filter { it.id != taskId }
+                taskRepository.deleteTask(user, taskId)
+                taskRepository.syncTasks(user)
+                loadTasks()
+            } catch (e : Exception) {
+                _errorMessage.value = "Erro ao excluir a tarefa: ${e.message}"
+            }
         }
     }
+    // Função para obter uma tarefa pelo ID
     fun getTaskById(id: String): Task? {
-        return _taskList.value?.find { it.id == id }
+        return _taskList.value.find { it.id == id }
     }
-
+    // Função para sincronizar as tarefas
     fun synchTasks(user : String) {
         viewModelScope.launch {
             try {
@@ -79,7 +83,7 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
         }
     }
 }
-
+// Fábrica para criar instâncias de TaskViewModel
 class TaskViewModelFactory(private val taskRepository : TaskRepository) : ViewModelProvider.Factory{
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

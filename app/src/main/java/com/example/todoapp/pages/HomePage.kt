@@ -11,7 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -28,7 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.firebaseauthlogin.AuthViewModel
+import com.example.todoapp.AuthViewModel
 import com.example.todoapp.data.model.Task
 import com.example.todoapp.ui.TaskViewModel
 
@@ -38,22 +38,24 @@ fun HomePage(
     navController: NavHostController,
     taskViewModel: TaskViewModel,
     authViewModel: AuthViewModel,
-    user : String,
+    user: String,
     onLogout: () -> Unit
 ) {
+    // Observa a lista de tarefas do ViewModel
     val taskList by taskViewModel.taskList.collectAsState()
-
-    LaunchedEffect(key1 = Unit, block = {taskViewModel.synchTasks(user)})
-
+    // Sincroniza as tarefas quando a página é carregada
+    LaunchedEffect(key1 = Unit, block = { taskViewModel.synchTasks(user) })
+    // Estrutura da página com Scaffold
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lista de Tarefas") },
+                title = { Text("Lista de Tarefas", style = MaterialTheme.typography.titleLarge) },
                 actions = {
                     TextButton(onClick = {
                         authViewModel.logout()
-                        onLogout() }) {
-                        Text("Sair")
+                        onLogout()
+                    }) {
+                        Text("Sair", style = MaterialTheme.typography.labelLarge)
                     }
                 }
             )
@@ -79,7 +81,6 @@ fun HomePage(
         }
     )
 }
-
 @Composable
 fun TaskList(
     tasks: List<Task>,
@@ -87,6 +88,7 @@ fun TaskList(
     onEditTask: (Task) -> Unit,
     onDeleteTask: (String) -> Unit
 ) {
+    // Lista de tarefas usando LazyColumn
     LazyColumn(modifier = modifier) {
         items(tasks) { task ->
             TaskItem(
@@ -97,18 +99,17 @@ fun TaskList(
         }
     }
 }
-
 @Composable
 fun TaskItem(
     task: Task,
     onEdit: (Task) -> Unit,
     onDelete: (String) -> Unit
 ) {
-    Card(modifier = Modifier.padding(8.dp)) {
+    // Item de tarefa com ElevatedCard
+    ElevatedCard(modifier = Modifier.padding(8.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = task.title, style = MaterialTheme.typography.headlineSmall)
             Text(text = task.description, style = MaterialTheme.typography.bodyLarge)
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
@@ -123,3 +124,5 @@ fun TaskItem(
         }
     }
 }
+
+
