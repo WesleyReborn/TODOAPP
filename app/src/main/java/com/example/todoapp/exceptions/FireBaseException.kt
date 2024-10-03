@@ -6,21 +6,22 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
+// Objeto que encapsula o tratamento de exceções específicas do Firebase, fornecendo mensagens de erro amigáveis ao usuário
 object FireBaseException {
-    // Função para tratar erros do Firebase e retornar mensagens apropriadas
+    // Função que recebe uma exceção do Firebase e retorna uma mensagem de erro apropriada com base no tipo da exceção
     fun fireBaseError(exception : Exception?) : String {
         return when(exception) {
-            // Caso o e-mail já esteja em uso
+            // Erro lançado quando o e-mail já está vinculado a outra conta
             is FirebaseAuthUserCollisionException -> "Este e-mail já está em uso em outra conta."
-            // Caso a senha seja muito fraca
+            // Erro lançado quando a senha fornecida é muito fraca
             is FirebaseAuthWeakPasswordException -> "A senha deve ter pelo menos 6 caracteres."
-            // Caso as credenciais sejam inválidas
+            // Erro lançado quando as credenciais de login são inválidas (e-mail ou senha incorretos)
             is FirebaseAuthInvalidCredentialsException -> "E-mail ou senha incorretos."
-            // Caso haja muitas tentativas de login
+            // Erro lançado quando há muitas tentativas de login em um curto período de tempo
             is FirebaseTooManyRequestsException -> "Muitas tentativas de login. Por favor, tente novamente mais tarde."
-            // Caso não haja conexão com a internet
+            // Erro lançado quando não há conexão com a internet
             is FirebaseNetworkException -> "Sem conexão com a internet. Verifique sua conexão e tente novamente."
-            // Caso ocorra qualquer outro erro
+            // Tratamento padrão para outros erros não específicos
             else -> "Algo deu errado. Por favor, tente novamente."
         }
     }
