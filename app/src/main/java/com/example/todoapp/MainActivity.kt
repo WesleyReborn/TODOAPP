@@ -25,16 +25,14 @@ class MainActivity : ComponentActivity() {
             firestoreRepository = FirestoreRepository(),
             context = applicationContext
         )
+        // Obtém o ID do usuário autenticado
+        val authViewModel : AuthViewModel by viewModels()
+        val user = authViewModel.currentUser?.uid ?: ""
         // Cria um TaskViewModelFactory que será utilizado para fornecer instâncias de TaskViewModel
-        val taskViewModelFactory = TaskViewModelFactory(taskRepository)
-        // Inicializa o AuthViewModel, responsável por gerenciar o estado de autenticação do usuário
-        val authViewModel: AuthViewModel by viewModels()
+        val taskViewModelFactory = TaskViewModelFactory(taskRepository, user)
         // Inicializa o TaskViewModel, que lida com as operações de tarefas, usando o factory criado anteriormente
         val taskViewModel: TaskViewModel by viewModels { taskViewModelFactory }
-        // Obtém o ID do usuário autenticado a partir do AuthViewModel, ou usa uma string vazia se o usuário não estiver autenticado
-        val user = authViewModel.currentUser?.uid ?: ""
-        // Enfileira um Worker responsável por sincronizar as tarefas entre o banco local e o Firestore,
-        // passando o contexto da aplicação e o ID do usuário autenticado
+        // Enfileira um Worker para sincronizar tarefas
         TaskSyncWorker.enqueueTaskSync(applicationContext, user)
         // Define o conteúdo da UI da Activity usando Jetpack Compose
         setContent {
@@ -49,7 +47,7 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         authViewModel = authViewModel,
                         taskViewModel = taskViewModel,
-                        user = user
+                        user = user,
                     ) {
                         // Navega para a tela de login e remove todas as telas anteriores da pilha de navegação
                         // até a tela inicial ("home"), garantindo que o usuário não possa voltar à tela anterior

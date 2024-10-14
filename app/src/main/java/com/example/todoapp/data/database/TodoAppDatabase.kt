@@ -8,7 +8,7 @@ import com.example.todoapp.dao.TaskDao
 import com.example.todoapp.data.model.Task
 
 // Definição da classe do banco de dados Room com a entidade Task e a versão do banco de dados
-@Database(entities = [Task::class], version = 3, exportSchema = false)
+@Database(entities = [Task::class], version = 4, exportSchema = false)
 abstract class TodoAppDatabase : RoomDatabase() {
     // Método abstrato para obter o DAO de tarefas, que será implementado pelo Room
     abstract fun taskDao() : TaskDao

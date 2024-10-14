@@ -15,5 +15,7 @@ data class Task(
     // Indica se a tarefa está sincronizada com o backend (false significa não sincronizada)
     val isSynch : Boolean = false,
     // Timestamp que registra o momento da última modificação na tarefa (usado para controle de versão e sincronização)
-    val timestamp : Long = System.currentTimeMillis()
+    val timestamp : Long = System.currentTimeMillis(),
+    // Identificador do usuário associado à tarefa
+    val userId : String = "" // Associar cada tarefa ao usuário que a criou
 )

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 // ViewModel responsável por gerenciar o estado e as operações de tarefas
-class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
+class TaskViewModel(private val taskRepository: TaskRepository, private val userId : String) : ViewModel() {
     // MutableStateFlow que contém a lista de tarefas, inicializado como uma lista vazia
     private val _taskList = MutableStateFlow<List<Task>>(emptyList())
     // StateFlow público que expõe a lista de tarefas, usado para observar mudanças de estado na UI
@@ -25,16 +25,16 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     private var recentlyDeletedTask : Task? = null
     // Bloco de inicialização que carrega as tarefas do repositório quando o ViewModel é criado
     init {
-        loadTasks()
+        loadTasks(userId)
     }
     // Função que carrega todas as tarefas do repositório
-    private fun loadTasks() {
+    private fun loadTasks(userId: String) {
         // Define o estado como carregando
         _loadingState.value = State.Loading
         viewModelScope.launch {
             try {
                 // Obtém todas as tarefas
-                val tasks = taskRepository.getAllTasks()
+                val tasks = taskRepository.getAllTasks(userId)
                 // Atualiza a lista de tarefas
                 _taskList.value = tasks
                 // Define o estado como autenticado (ou carregado com sucesso)
@@ -48,15 +48,15 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
         }
     }
     // Função que insere uma nova tarefa no repositório
-    fun insertTask(user : String, task: Task) {
+    fun insertTask(userId : String, task: Task) {
         viewModelScope.launch {
             try {
                 // Insere a nova tarefa
-                taskRepository.insert(user, task)
+                taskRepository.insert(userId, task)
                 // Sincroniza as tarefas
-                taskRepository.syncTasks(user)
+                taskRepository.syncTasks(userId)
                 // Recarrega as tarefas para atualizar a lista
-                loadTasks()
+                loadTasks(userId)
             } catch (e : Exception) {
                 // Define a mensagem de erro
                 _errorMessage.value = "Erro ao inserir a tarefa: ${e.message}"
@@ -64,15 +64,15 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
         }
     }
     // Função que atualiza uma tarefa existente
-    fun updateTask(user : String, task: Task) {
+    fun updateTask(userId : String, task: Task) {
         viewModelScope.launch {
             try {
                 // Atualiza a tarefa
-                taskRepository.update(user, task)
+                taskRepository.update(userId, task)
                 // Sincroniza as tarefas
-                taskRepository.syncTasks(user)
+                taskRepository.syncTasks(userId)
                 // Recarrega a lista de tarefas
-                loadTasks()
+                loadTasks(userId)
             } catch (e : Exception) {
                 // Define a mensagem de erro
                 _errorMessage.value = "Erro ao atualizar a tarefa: ${e.message}"
@@ -80,19 +80,19 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
         }
     }
     // Função que exclui uma tarefa
-    fun deleteTask(user : String, taskId: String) {
+    fun deleteTask(userId : String, taskId: String) {
         viewModelScope.launch {
             try {
                 // Armazena a tarefa para permitir desfazer
                 recentlyDeletedTask = _taskList.value.find { it.id == taskId }
                 // Exclui a tarefa localmente
-                taskRepository.deleteTaskLocally(taskId)
+                taskRepository.deleteTaskLocally(userId, taskId)
                 // Atualiza a lista de tarefas na UI
                 _taskList.value = _taskList.value.filter { it.id != taskId }
                 // Exclui a tarefa do repositório remoto
-                taskRepository.deleteTask(user, taskId)
+                taskRepository.deleteTask(userId, taskId)
                 // Sincroniza as tarefas
-                taskRepository.syncTasks(user)
+                taskRepository.syncTasks(userId)
             } catch (e : Exception) {
                 // Define a mensagem de erro
                 _errorMessage.value = "Erro ao excluir a tarefa: ${e.message}"
@@ -100,16 +100,16 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
         }
     }
     // Função que restaura uma tarefa excluída
-    fun undoDelete(user: String) {
+    fun undoDelete(userId: String) {
         recentlyDeletedTask?.let { task ->
             viewModelScope.launch {
                 try {
                     // Restaura a tarefa na lista de tarefas
                     _taskList.value = _taskList.value + task
                     // Insere a tarefa restaurada no repositório
-                    taskRepository.insert(user, task)
+                    taskRepository.insert(userId, task)
                     // Sincroniza as tarefas
-                    taskRepository.syncTasks(user)
+                    taskRepository.syncTasks(userId)
                 } catch (e : Exception) {
                     // Define a mensagem de erro
                     _errorMessage.value = "Erro ao restaurar a tarefa: ${e.message}"
@@ -123,13 +123,13 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
         return _taskList.value.find { it.id == id }
     }
     // Função que sincroniza as tarefas manualmente
-    fun synchTasks(user : String) {
+    fun synchTasks(userId : String) {
         viewModelScope.launch {
             try {
                 // Sincroniza as tarefas
-                taskRepository.syncTasks(user)
+                taskRepository.syncTasks(userId)
                 // Recarrega a lista de tarefas
-                loadTasks()
+                loadTasks(userId)
             } catch (e : Exception) {
                 // Define a mensagem de erro
                 _errorMessage.value = "Erro ao sincronizar as tarefas: ${e.message}"
@@ -138,12 +138,12 @@ class TaskViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     }
 }
 // Fábrica para criar instâncias de TaskViewModel, necessária para fornecer dependências
-class TaskViewModelFactory(private val taskRepository : TaskRepository) : ViewModelProvider.Factory{
+class TaskViewModelFactory(private val taskRepository : TaskRepository, private val userId: String) : ViewModelProvider.Factory{
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(TaskViewModel::class.java)) {
             // Retorna uma instância de TaskViewModel
-            return TaskViewModel(taskRepository) as T
+            return TaskViewModel(taskRepository, userId) as T
         }
         // Lança uma exceção se a classe não for reconhecida
         throw IllegalArgumentException("Unknown ViewModel class")

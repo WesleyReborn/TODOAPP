@@ -39,11 +39,11 @@ class TaskSyncWorker(
                 // Obtém as tarefas do Firestore (remotas)
                 val remoteTasks = firestoreRepository.getAllTasks(user)
                 // Obtém as tarefas locais do Room
-                val localTasks = taskRepository.getAllTasks()
+                val localTasks = taskRepository.getAllTasks(user)
                 // Resolve conflitos entre tarefas locais e remotas
                 val resolvedTasks = resolveConflictis(localTasks, remoteTasks)
                 // Atualiza as tarefas locais e remotas com as resolvidas
-                taskRepository.updateTasks(resolvedTasks)
+                taskRepository.updateTasks(user, resolvedTasks)
                 firestoreRepository.updateTasks(user, resolvedTasks)
             }
             // Retorna sucesso após a sincronização
