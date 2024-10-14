@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.todoapp.data.model.Task
-import com.example.todoapp.ui.TaskViewModel
+import com.example.todoapp.TaskViewModel
 
 @Composable
 fun EditTaskPage(

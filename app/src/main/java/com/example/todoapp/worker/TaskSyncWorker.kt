@@ -1,4 +1,4 @@
-package com.example.todoapp.workers
+package com.example.todoapp.worker
 
 import android.content.Context
 import androidx.work.Constraints
@@ -9,8 +9,8 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.todoapp.data.FirestoreRepository
-import com.example.todoapp.data.TaskRepository
+import com.example.todoapp.data.repository.FirestoreRepository
+import com.example.todoapp.data.repository.TaskRepository
 import com.example.todoapp.data.model.Task
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

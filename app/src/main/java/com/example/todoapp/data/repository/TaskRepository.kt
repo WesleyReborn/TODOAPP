@@ -1,7 +1,7 @@
-package com.example.todoapp.data
+package com.example.todoapp.data.repository
 
 import android.content.Context
-import com.example.todoapp.data.dao.TaskDao
+import com.example.todoapp.dao.TaskDao
 import com.example.todoapp.data.model.Task
 import com.example.todoapp.utils.NetworkUtils
 import kotlinx.coroutines.Dispatchers

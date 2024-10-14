@@ -4,21 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.todoapp.data.FirestoreRepository
-import com.example.todoapp.data.TaskRepository
-import com.example.todoapp.data.TodoAppDatabase
-import com.example.todoapp.ui.TaskViewModel
-import com.example.todoapp.ui.TaskViewModelFactory
+import com.example.todoapp.data.repository.FirestoreRepository
+import com.example.todoapp.data.repository.TaskRepository
+import com.example.todoapp.data.database.TodoAppDatabase
+import com.example.todoapp.navigation.AppNavigation
 import com.example.todoapp.ui.theme.TODOAppTheme
-import com.example.todoapp.workers.TaskSyncWorker
+import com.example.todoapp.worker.TaskSyncWorker
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

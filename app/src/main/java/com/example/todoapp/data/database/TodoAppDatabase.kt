@@ -1,10 +1,10 @@
-package com.example.todoapp.data
+package com.example.todoapp.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.todoapp.data.dao.TaskDao
+import com.example.todoapp.dao.TaskDao
 import com.example.todoapp.data.model.Task
 
 // Definição da classe do banco de dados Room com a entidade Task e a versão do banco de dados

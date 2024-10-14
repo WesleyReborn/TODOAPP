@@ -1,4 +1,4 @@
-package com.example.todoapp.data
+package com.example.todoapp.data.repository
 
 import android.util.Log
 import com.example.todoapp.data.model.Task

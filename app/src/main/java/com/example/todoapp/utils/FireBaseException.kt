@@ -1,4 +1,4 @@
-package com.example.todoapp.exceptions
+package com.example.todoapp.utils
 
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException

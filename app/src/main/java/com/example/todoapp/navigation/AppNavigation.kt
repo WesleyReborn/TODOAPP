@@ -1,17 +1,18 @@
 @file:Suppress("NAME_SHADOWING")
 
-package com.example.todoapp
+package com.example.todoapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.todoapp.AuthViewModel
+import com.example.todoapp.TaskViewModel
 import com.example.todoapp.pages.AddTaskPage
 import com.example.todoapp.pages.EditTaskPage
 import com.example.todoapp.pages.HomePage
 import com.example.todoapp.pages.LoginPage
 import com.example.todoapp.pages.SignupPage
-import com.example.todoapp.ui.TaskViewModel
 
 @Composable
 fun AppNavigation(

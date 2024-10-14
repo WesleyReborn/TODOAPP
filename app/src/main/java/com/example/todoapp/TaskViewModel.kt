@@ -1,10 +1,9 @@
-package com.example.todoapp.ui
+package com.example.todoapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.todoapp.State
-import com.example.todoapp.data.TaskRepository
+import com.example.todoapp.data.repository.TaskRepository
 import com.example.todoapp.data.model.Task
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

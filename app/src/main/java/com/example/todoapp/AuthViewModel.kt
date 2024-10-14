@@ -1,7 +1,7 @@
 package com.example.todoapp
 
 import androidx.lifecycle.ViewModel
-import com.example.todoapp.exceptions.FireBaseException
+import com.example.todoapp.utils.FireBaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
