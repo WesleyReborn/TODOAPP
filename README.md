@@ -62,6 +62,10 @@ A autenticação é monitorada por meio do **AuthViewModel**, que mantém o esta
 - Problemas ocasionais com a conexão à internet podem afetar a experiência do usuário.
 
 
+
+https://github.com/user-attachments/assets/e731d7cf-b76e-4de3-92d7-058a42591d1d
+
+
 ## 🗂️ Estrutura do Projeto
 
 ```bash
