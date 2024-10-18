@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 // Cria uma estrutura de Scaffold que define a base da UI,
                 // permitindo a adição de componentes como uma barra de navegação inferior ou superior, e preenchendo a tela
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
                     // Chama a função que gerencia a navegação da aplicação
                     AppNavigation(
                         navController = navController,

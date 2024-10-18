@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 // ViewModel responsável por gerenciar o estado e as operações de tarefas
-class TaskViewModel(private val taskRepository: TaskRepository, private val userId : String) : ViewModel() {
+class TaskViewModel(private val taskRepository: TaskRepository, userId : String) : ViewModel() {
     // MutableStateFlow que contém a lista de tarefas, inicializado como uma lista vazia
     private val _taskList = MutableStateFlow<List<Task>>(emptyList())
     // StateFlow público que expõe a lista de tarefas, usado para observar mudanças de estado na UI
